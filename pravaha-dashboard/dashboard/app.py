@@ -1,0 +1,2 @@
+from dashboard.feedback_analytics import show_feedback_trends
+show_feedback_trends()
