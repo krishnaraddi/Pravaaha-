@@ -2,7 +2,7 @@ import openai
 import os
 from dotenv import load_dotenv
 import joblib
-model = joblib.load("triage_model.pkl")
+#model = joblib.load("triage_model.pkl")
 
 
 load_dotenv()
@@ -52,5 +52,5 @@ def build_prompt(ticket_text):
 #         return f"Classification failed: {str(e)}"
     
 
-def classify_ticket(text):
-    return model.predict([text])[0]
+#def classify_ticket(text):
+  #  return model.predict([text])[0]
