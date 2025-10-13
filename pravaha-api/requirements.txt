@@ -6,3 +6,5 @@ slack_sdk
 google-cloud-firestore
 google-cloud-secret-manager
 python-dotenv
+joblib
+
