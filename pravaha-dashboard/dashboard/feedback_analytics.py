@@ -1,29 +1,45 @@
 import streamlit as st
 import pandas as pd
-from google.cloud import firestore
+from datetime import datetime
+import os
+import subprocess
 
-def load_feedback_data():
-    db = firestore.Client()
-    docs = db.collection("ticket_history").stream()
-    data = []
-    for doc in docs:
-        d = doc.to_dict()
-        data.append({
-            "Ticket": d.get("ticket_id"),
-            "Feedback": d.get("feedback", "Unrated")
-        })
-    return pd.DataFrame(data)
 
-def show_feedback_trends():
-    df = load_feedback_data()
-    st.subheader("🧠 Technician Feedback Trends")
-    feedback_counts = df["Feedback"].value_counts()
-    st.bar_chart(feedback_counts)
+st.subheader("🧠 Model Accuracy & Retraining Readiness")
 
-    correct_ratio = feedback_counts.get("Correct", 0) / len(df)
-    st.metric("Retraining Readiness", f"{correct_ratio:.0%} of tickets validated")
+# Simulated metrics — replace with real logs or Firestore stats
+accuracy = 0.89
+last_trained = "2025-09-15"
+tickets_since_last_train = 120
 
-    if correct_ratio > 0.8 and len(df) > 50:
-        st.success("✅ Enough validated data for retraining!")
-    else:
-        st.warning("⚠️ Need more technician feedback before retraining.")
+st.metric("Current Accuracy", f"{accuracy * 100:.1f}%")
+st.metric("Tickets Since Last Training", tickets_since_last_train)
+st.metric("Last Trained On", last_trained)
+
+# Retraining threshold
+if tickets_since_last_train > 100:
+    st.warning("⚠️ Retraining recommended")
+else:
+    st.success("✅ Model is up-to-date")
+
+# Optional: show accuracy trend
+trend_data = pd.DataFrame({
+    "Date": ["Aug", "Sep", "Oct"],
+    "Accuracy": [0.85, 0.88, accuracy]
+})
+st.line_chart(trend_data.set_index("Date"))
+
+
+st.subheader("🔁 Manual Retraining")
+
+if st.button("Trigger Retraining Now"):
+    with st.spinner("Retraining in progress..."):
+        result = subprocess.run(["python", "training/train_classifier.py"], capture_output=True, text=True)
+        if result.returncode == 0:
+            st.success("✅ Retraining completed successfully")
+        else:
+            st.error("❌ Retraining failed")
+            st.text(result.stderr)
+#This assumes your dashboard container has access to the 
+# training script and Python environment. 
+# For Cloud Run, you’ll want to expose retraining as an API endpoint instead.

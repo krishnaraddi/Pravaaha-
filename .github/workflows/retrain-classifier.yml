@@ -1,0 +1,39 @@
+name: Auto-Retrain Classifier
+
+on:
+  schedule:
+    - cron: '0 5 1 * *'  # Runs at 5 AM on the 1st of every month
+  workflow_dispatch:
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install -r training/requirements.txt
+
+    - name: Export Firestore data
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_KEY_JSON }}
+      run: |
+        python training/export_csv.py
+
+    - name: Train classifier
+      run: |
+        python training/train_classifier.py
+
+    - name: Commit updated model
+      run: |
+        git config user.name "pravaha-bot"
+        git config user.email "bot@pravaha.ai"
+        git add training/triage_model.pkl
+        git commit -m "🤖 Auto-retrained classifier"
+        git push

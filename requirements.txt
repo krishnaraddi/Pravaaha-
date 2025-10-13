@@ -1,6 +1,8 @@
+fastapi
+uvicorn
 openai
-requests
-python-dotenv
-slack_sdk
-streamlit
 langchain
+slack_sdk
+google-cloud-firestore
+google-cloud-secret-manager
+python-dotenv
