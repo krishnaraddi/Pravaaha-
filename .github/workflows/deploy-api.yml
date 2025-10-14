@@ -38,13 +38,13 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/pravaha-api ./pravaha-api
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/pravaha-api
+        docker build -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-api ./pravaha-api
+        docker push asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-api
 
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy pravaha-api \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/pravaha-api \
+          --image asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-api \
           --region asia-south1 \
           --platform managed \
           --allow-unauthenticated \
