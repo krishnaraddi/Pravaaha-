@@ -3,3 +3,4 @@ pandas==2.1.4
 google-cloud-firestore
 python-dotenv
 langchain_community
+scikit-learn

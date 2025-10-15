@@ -18,7 +18,7 @@ class Ticket(BaseModel):
     ticket_id: str
     description: str
 
-@app.post("/run")
+#@app.post("/run")
 # def run_ticket_workflow(ticket: Ticket):
 #     """
 #     Trigger the full Pravāha agentic workflow for a given ticket.
@@ -29,6 +29,7 @@ class Ticket(BaseModel):
 #         "workflow_result": result
 #     }
 
+@app.post("/run")
 async def run_workflow(request: Request):
     data = await request.json()
     prompt = data.get("prompt", "Resolve ticket #123")
