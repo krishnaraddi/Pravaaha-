@@ -23,7 +23,9 @@ else:
     st.subheader("🎫 Ticket Flow Summary")
     st.metric("Total Tickets", len(df))
     st.metric("Unique Technicians", df["triage"].str.extract(r'Assigned to (\w+)')[0].nunique())
-    st.metric("Avg Time Logged", f"{df['time_logged'].str.extract(r'(\d+)')[0].astype(int).mean():.1f} min")
+    avg_time = df['time_logged'].str.extract(r'(\d+)')[0].astype(int).mean()
+    st.metric("Avg Time Logged", f"{avg_time:.1f} min")
+
 
     # 🔹 Section 2: Agent Performance
     st.subheader("👨‍💻 Technician Performance")
