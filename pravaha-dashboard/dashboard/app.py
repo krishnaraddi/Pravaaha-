@@ -6,7 +6,7 @@ st.set_page_config(page_title="Pravāha Dashboard", layout="wide")
 st.title("📊 Pravāha Agentic Dashboard")
 
 db = firestore.Client()
-docs = db.collection("dashboard").stream()
+docs = db.collection("pravaha-db").stream()
 
 # Collect ticket data
 tickets = []
