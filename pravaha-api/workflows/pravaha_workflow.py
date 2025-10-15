@@ -1,3 +1,5 @@
+# workflows/pravaha_workflow.py
+
 from langchain.agents import Tool, initialize_agent
 from langchain.llms import OpenAI
 from agents.triage_agent import classify_ticket
@@ -15,3 +17,17 @@ tools = [
 ]
 
 agent = initialize_agent(tools, llm, agent_type="zero-shot-react-description")
+
+def run_pravaha_workflow(input_text: str = "Resolve ticket #123 with technician insights") -> dict:
+    """
+    Entry point for executing the Pravāha agent workflow.
+    Args:
+        input_text (str): Prompt or task to run through the agent.
+    Returns:
+        dict: Agent response and metadata.
+    """
+    try:
+        response = agent.run(input_text)
+        return {"status": "success", "response": response}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

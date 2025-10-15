@@ -2,7 +2,7 @@
 # # workflow as a FastAPI endpoint. It’s clean, secure, 
 # and ready for Cloud Run deployment.
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from workflows.pravaha_workflow import run_pravaha_workflow
 from training.train_classifier import train_model, load_data, save_model
@@ -19,15 +19,22 @@ class Ticket(BaseModel):
     description: str
 
 @app.post("/run")
-def run_ticket_workflow(ticket: Ticket):
-    """
-    Trigger the full Pravāha agentic workflow for a given ticket.
-    """
-    result = run_pravaha_workflow(ticket.description, ticket.ticket_id)
-    return {
-        "ticket_id": ticket.ticket_id,
-        "workflow_result": result
-    }
+# def run_ticket_workflow(ticket: Ticket):
+#     """
+#     Trigger the full Pravāha agentic workflow for a given ticket.
+#     """
+#     result = run_pravaha_workflow(ticket.description, ticket.ticket_id)
+#     return {
+#         "ticket_id": ticket.ticket_id,
+#         "workflow_result": result
+#     }
+
+async def run_workflow(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt", "Resolve ticket #123")
+    result = run_pravaha_workflow(prompt)
+    return result
+
 
 @app.post("/retrain")
 def retrain_classifier():
