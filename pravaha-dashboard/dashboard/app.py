@@ -5,7 +5,7 @@ import pandas as pd
 st.set_page_config(page_title="Pravāha Dashboard", layout="wide")
 st.title("📊 Pravāha Agentic Dashboard")
 
-db = firestore.Client()
+db =  firestore.Client(project="pravaha-project")
 docs = db.collection("pravaha-db").stream()
 
 # Collect ticket data
