@@ -8,4 +8,5 @@ google-cloud-secret-manager
 python-dotenv
 joblib
 langchain_community
+pandas==2.1.4
 
