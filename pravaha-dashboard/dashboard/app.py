@@ -1,5 +1,6 @@
 import streamlit as st
 from google.cloud import firestore
+from feedback_analytics import run_feedback_analysis
 import pandas as pd
 
 st.set_page_config(page_title="Pravāha Dashboard", layout="wide")
@@ -37,3 +38,10 @@ else:
     # 🔹 Section 3: Ticket History Table
     st.subheader("📋 Ticket History")
     st.dataframe(df[["ticket_id", "triage", "resolution", "time_logged", "timestamp"]])
+
+    # 🔹 Section 4: Feedback Analytics
+    st.subheader("📈 Run Feedback Analytics")
+    if st.button("Run Feedback Analytics"):
+        result = run_feedback_analysis()
+        st.success("Analytics completed.")
+        st.write(result)

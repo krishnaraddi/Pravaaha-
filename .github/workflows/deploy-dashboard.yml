@@ -44,3 +44,4 @@ jobs:
           --allow-unauthenticated \
           --port 8501
           --set-env-vars GOOGLE_CLOUD_PROJECT=pravaha-project
+

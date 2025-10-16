@@ -1,44 +1,44 @@
 # Pravāha: Where IT Flows Intelligently
 
-Pravāha is a modular agentic AI system for Managed Service Providers (MSPs), designed to automate ticket triage, assist technicians, track time, and visualize service performance — all with intelligent orchestration.
+ Pravāha is a composable agentic AI platform designed to automate technician workflows — from ticket triage to resolution suggestions, time logging, and dashboard updates. Built with LangChain, OpenAI, and Firestore, and deployed on Google Cloud Run, Pravāha offers real-time visibility and modular orchestration.
 
 ## 🔧 Features
 
-- 🤖 Triage Agent: Classifies and routes tickets using GPT or fine-tuned models
-- 💬 Assistant Agent: Suggests resolutions and technician replies
-- ⏱️ Time Tracker Agent: Logs technician effort contextually
-- 📊 Dashboard: Visualizes KPIs, feedback trends, and retraining readiness
-- 📣 Slack Integration: Sends agent summaries and captures technician feedback
-- 🔁 Learning Loop: Fine-tunes classifier from historical tickets and feedback
+- `/run` API endpoint to trigger multi-agent workflows
+- LangChain agents:
+  - ClassifyTicket
+  - SuggestResolution
+  - LogTime
+  - UpdateDashboard
+- Firestore-native backend for ticket storage
+- Streamlit dashboard for technician metrics
+- CI/CD with GitHub Actions
+- Secure secret management via Secret Manager
 
-## 🧱 Architecture
+## 🚀 Architecture
 
-- `pravaha-api`: FastAPI microservice with LangChain orchestration
-- `pravaha-dashboard`: Streamlit dashboard for KPIs and feedback analytics
-- Firestore: Shared state and ticket history
-- Slack: Notification + feedback loop
-- CI/CD: GitHub Actions + Google Cloud Run
+- Cloud Run (API + Dashboard)
+- LangChain + OpenAI agents
+- Firestore (Native mode)
+- Streamlit dashboard
+- GitHub Actions CI/CD
 
-## 🚀 Getting Started
+## 📊 Dashboard
 
-1. Clone the repo  
-2. Set up Google Cloud project and Firestore  
-3. Add secrets to Secret Manager  
-4. Deploy via GitHub Actions  
-5. Trigger workflows via API or Slack
+Visualizes:
+- Total tickets
+- Unique technicians
+- Average time logged
+- Technician performance bar chart
+- Ticket history table
 
-## 📂 Repo Structure
+## 🧪 How to Use
 
-See [docs/folder-structure.md](docs/folder-structure.md) for full breakdown.
+### Trigger Workflow
 
-## 🧠 Roadmap
-
-- [x] Modular agent orchestration  
-- [x] Slack feedback loop  
-- [x] Firestore-based learning  
-- [ ] Auto-retraining pipeline  
-- [ ] Voice interface for technicians
-
-## 📄 License
+```bash
+curl -X POST https://pravaha-api-250841568989.asia-south1.run.app/run \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Resolve ticket #123 with technician insights"}'
 
 Apache-2.0 license
