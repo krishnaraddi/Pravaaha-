@@ -1,0 +1,42 @@
+name: Deploy to AWS via OIDC
+
+on:
+  push:
+    branches:
+      - aws-deploy
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials via OIDC
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::110854640517:role/GitHubOIDCDeployRole
+        aws-region: us-east-2
+
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and push API container
+      run: |
+        IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/pravaha-api:latest
+        docker build -t $IMAGE_URI ./api
+        docker push $IMAGE_URI
+
+    - name: Build and push Dashboard container
+      run: |
+        IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/pravaha-dashboard:latest
+        docker build -t $IMAGE_URI ./dashboard
+        docker push $IMAGE_URI
+
+   
