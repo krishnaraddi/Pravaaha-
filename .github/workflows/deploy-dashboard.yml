@@ -1,47 +1,34 @@
-name: Deploy Pravāha Dashboard
+name: Deploy Pravaha Dashboard to AWS
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - "pravaha-dashboard/**"
-      - ".github/workflows/deploy-dashboard.yml"
-  workflow_dispatch:
+    branches:
+      - aws-deploy
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  deploy-dashboard:
+  build-and-push-dashboard:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Authenticate with Google Cloud
-      uses: google-github-actions/auth@v1
+    - name: Configure AWS credentials via OIDC
+      uses: aws-actions/configure-aws-credentials@v2
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        role-to-assume: arn:aws:iam::110854640517:role/GitHubOIDCDeployRole
+        aws-region: us-east-2
 
-    - name: Configure gcloud
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Authenticate Docker to Artifact Registry
+    - name: Build and push Dashboard container
       run: |
-        gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
-
-    - name: Build and push Docker image
-      run: |
-        docker build -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-dashboard ./pravaha-dashboard
-        docker push asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-dashboard
-
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy pravaha-dashboard \
-          --image asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pravaha-repo/pravaha-dashboard \
-          --region asia-south1 \
-          --platform managed \
-          --allow-unauthenticated \
-          --port 8501
-          --set-env-vars GOOGLE_CLOUD_PROJECT=pravaha-project
-
+        IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/pravaha-dashboard:latest
+        docker build -t $IMAGE_URI ./pravaha-dashboard
+        docker push $IMAGE_URI
